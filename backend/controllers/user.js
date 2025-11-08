@@ -7,12 +7,12 @@ const { USER_JWT_SECRET } = require("../config/Config");
 const handleSignup = async(req , res)=>{
     const {name, email, password} = req.body;
     try{
-        const existingUser =await client.user.findUnique({
+        const existingUser =await client.user.findFirst({
             where : {
                 email: email
             }
         })
-        if(existingUser.email === email){
+        if(existingUser && existingUser.email == email){
             return res.status(501).json({
                 error: "user already exist please login"
             })
@@ -26,9 +26,9 @@ const handleSignup = async(req , res)=>{
                 password: hashPass
             }
         })
+        console.log(newUser)
         return res.json({
-            messge: "Signup successfull",
-            user: existingUser
+            message: "Signup successfull",
         })
     }catch(error){
         res.status(404).json({

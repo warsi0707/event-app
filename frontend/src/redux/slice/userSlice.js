@@ -24,6 +24,30 @@ export const handleSignIn = createAsyncThunk('fetch/signin', async({email, passw
         return rejectWithValue(error)
     }
 })
+export const handleSignUp = createAsyncThunk('fetch/signup', async({name,email, password}, {rejectWithValue})=>{
+    console.log(name, email, password)
+    try{
+        const response = await fetch(`${Backendurl}/user/signup`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': "application/json"
+            },
+            body: JSON.stringify({name,email, password})
+        })
+        const result = await response.json()
+        console.log(result)
+        if(response.status ==200){
+            toast.success(result.message)
+            return result
+        }else{
+            toast.error(result.error)
+            return rejectWithValue(result.error)
+        }
+    }catch(error){
+        toast.error("Failed")
+        return rejectWithValue(error)
+    }
+})
 
 const userSlice = createSlice({
     name: 'user',
@@ -69,6 +93,18 @@ const userSlice = createSlice({
             state.user = action.payload.user
             localStorage.setItem('token', action.payload.token)
             localStorage.setItem("user", JSON.stringify(action.payload.user))
+        })
+        .addCase(handleSignUp.pending, (state)=> {
+            state.logLoading = true
+        })
+        .addCase(handleSignUp.rejected, (state)=>{
+            state.logLoading = false
+            state.error = false
+        })
+        .addCase(handleSignUp.fulfilled, (state,action)=>{
+            console.log(action.payload)
+            state.logLoading = false
+            state.error = false
         })
     }
 })
