@@ -1,10 +1,10 @@
 import { Link } from "react-router";
 import FormInput from "../components/FormInput";
 import SignButton from "../components/SignButton";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { FaRegEye } from "react-icons/fa";
 import { FaRegEyeSlash } from "react-icons/fa";
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import { handleSignIn } from "../redux/slice/userSlice";
 
 
@@ -13,6 +13,8 @@ export default function Signin(){
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const dispatch = useDispatch()
+    const loading = useSelector(state => state.user.logLoading)
+    console.log(loading)
 
     const handleSigninBtn =()=>{
         dispatch(handleSignIn({email, password}))
@@ -37,7 +39,7 @@ export default function Signin(){
                         <p>Haven't account ?</p>
                         <Link to={"/signup"} className="underline hover:text-blue-800">Register</Link>
                     </div>
-                    <SignButton onclick={handleSigninBtn} title={"Signin"}/>
+                    <SignButton onclick={handleSigninBtn} title={loading == true?"Loading...": "Signin" }/>
                 </div>
             </div>
         </div>
