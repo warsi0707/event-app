@@ -11,9 +11,9 @@ export default function Navbar(){
             <div className="bg-slate-100 shadow-2xl w-full p-5 text-black flex justify-between items-center px-10 md:px-32">
             <Link to={"/"} className="font-bold">Home</Link>
             <div className="hidden sm:flex items-center gap-2">
-                <Link to={"/"} className="font-bold hover:text-blue-500">Signup</Link>
-                <Link to={"/"} className="font-bold hover:text-blue-500">Signin</Link>
-                <Link to={"/"} className="font-bold hover:text-blue-500">Add Event</Link>
+                <Link to={"/post-event"} className="font-bold hover:text-blue-500">Add Event</Link>
+                <Link to={"/signup"} className="font-bold hover:text-blue-500">Signup</Link>
+                <Link to={"/signin"} className="font-bold hover:text-blue-500">Signin</Link>
                 <button className="font-bold hover:text-red-500 cursor-pointer">Logout</button>
             </div>
             <div className="sm:hidden flex items-center">
