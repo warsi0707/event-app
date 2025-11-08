@@ -5,13 +5,8 @@ const jwt = require('jsonwebtoken');
 const { USER_JWT_SECRET } = require("../config/Config");
 
 const handleSignup = async(req , res)=>{
-    const {name, email, password, confirmPass} = req.body;
+    const {name, email, password} = req.body;
     try{
-        if(password !== confirmPass){
-            return res.status(501).json({
-                error: "Password not matched"
-            })
-        }
         const existingUser =await client.user.findUnique({
             where : {
                 email: email
@@ -47,6 +42,11 @@ const handleSignin = async(req,res)=>{
         const findUser = await client.user.findUnique({
             where: {email: email}
         })
+       if(!findUser){
+         return res.status(404).json({
+            error: "User not found, please login"
+        })
+       }
         const comparePassword = findUser? await bcrypt.compare(password,findUser.password): false;
         if(comparePassword){
             const token =  jwt.sign({
@@ -54,7 +54,12 @@ const handleSignin = async(req,res)=>{
             }, USER_JWT_SECRET)
             return res.json({
                 message: "Signin success",
-                token: token
+                token: token,
+                user: {
+                    name: findUser.name,
+                    email: findUser.email,
+                    createdAt: findUser.createdAt
+                }
             })
         }
     }catch(error){
