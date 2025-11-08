@@ -1,6 +1,6 @@
 const { PrismaClient } = require("@prisma/client")
-
 const client = new PrismaClient()
+
 const handleJoinEvent =async (req, res)=>{
     const {id} = req.params;
     try{

@@ -71,6 +71,7 @@ const userSlice = createSlice({
             const token = localStorage.getItem('token')
             if(token){
                 localStorage.removeItem('token')
+                localStorage.removeItem('user')
                 toast.success("logout")
                 state.token = null
                 state.user = null
