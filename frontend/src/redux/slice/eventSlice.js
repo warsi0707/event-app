@@ -36,6 +36,28 @@ export const postEvent = createAsyncThunk("fetch/postEvent", async({title, descr
         return rejectWithValue(error)
     }
 })
+export const removeEvent = createAsyncThunk("fetch/removeEvent", async(id,{rejectWithValue})=>{
+    console.log("fetch id: ", id)
+    try{
+        const response = await fetch(`${Backendurl}/user/event/${id}`,{
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                token: localStorage.getItem("token")
+            }
+        })
+        const result = await response.json()
+        console.log(result)
+        if(response.status ==200){
+            toast.success(result.message)
+            return result
+        }else{
+            toast.error(result.error)
+        }
+    }catch(error){
+        return rejectWithValue(error)
+    }
+})
 
 const eventSlice = createSlice({
     name: 'event',
@@ -73,6 +95,18 @@ const eventSlice = createSlice({
                 state.events = []
             }
             state.events.push(action.payload.event)
+        })
+        .addCase(removeEvent.pending, (state)=>{
+            state.eventLoading = true
+        })
+        .addCase(removeEvent.rejected, (state,action)=>{
+            state.eventLoading = false
+            state.error = false
+        })
+        .addCase(removeEvent.fulfilled, (state, action)=>{
+            state.eventLoading = false
+            state.error = false
+            state.events = state.events.filter((event)=> event.id !== action.payload.event.id)
         })
     }
 })
