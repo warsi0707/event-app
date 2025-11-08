@@ -2,10 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { RxCross1 } from "react-icons/rx";
+import Sidenavbar from "../components/SideNavbar";
+
 export default function Navbar(){
     const [hamberg, setHamberg] = useState(false)
     return (
-        <div className="bg-slate-100 shadow-2xl w-full p-5 text-black flex justify-between items-center px-10 md:px-32">
+        <>
+            <div className="bg-slate-100 shadow-2xl w-full p-5 text-black flex justify-between items-center px-10 md:px-32">
             <Link to={"/"} className="font-bold">Home</Link>
             <div className="hidden sm:flex items-center gap-2">
                 <Link to={"/"} className="font-bold hover:text-blue-500">Signup</Link>
@@ -20,5 +23,7 @@ export default function Navbar(){
             }
             </div>
         </div>
+         {hamberg && <Sidenavbar/>}
+        </>
     )
 }
