@@ -8,7 +8,7 @@ import { FaRegEyeSlash } from "react-icons/fa";
 export default function Signin(){
     const [showPassword, setShowPassword] = useState(false)
     return (
-        <div className="min-h-screen w-full p-3 md:w-[900px]  mx-auto flex justify-center items-center">
+        <div className="min-h-screen w-full p-3 lg:w-[900px]  mx-auto flex justify-center items-center">
             <div className="bg-slate-100 shadow-2xl border border-gray-200 -mt-32 w-96  p-4 rounded-md">
                 <h1 className="text-xl text-center ">Login </h1>
                 <div className="flex flex-col py-10 gap-3">
