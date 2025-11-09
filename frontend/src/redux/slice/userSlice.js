@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 import { Backendurl } from "../../utils/Backendurl";
+import { createElement } from "react";
 
 export const handleSignIn = createAsyncThunk('fetch/signin', async({email, password}, {rejectWithValue})=>{
     try{
@@ -48,6 +49,7 @@ export const handleSignUp = createAsyncThunk('fetch/signup', async({name,email, 
         return rejectWithValue(error)
     }
 })
+
 
 const userSlice = createSlice({
     name: 'user',

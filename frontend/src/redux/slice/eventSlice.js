@@ -25,7 +25,6 @@ export const postEvent = createAsyncThunk("fetch/postEvent", async({title, descr
             body: JSON.stringify({title, description, date, location})
         })
         const result = await response.json()
-        console.log(result)
         if(response.status == 200){
             toast.success(result.message)
             return result
@@ -47,7 +46,6 @@ export const removeEvent = createAsyncThunk("fetch/removeEvent", async(id,{rejec
             }
         })
         const result = await response.json()
-        console.log(result)
         if(response.status ==200){
             toast.success(result.message)
             return result
@@ -58,13 +56,105 @@ export const removeEvent = createAsyncThunk("fetch/removeEvent", async(id,{rejec
         return rejectWithValue(error)
     }
 })
+export const joinEvent = createAsyncThunk("fetch/joinEvent", async(id, {rejectWithValue})=>{
+    try{
+        const response = await fetch(`${Backendurl}/event/${id}`, {
+            method: 'PUT',
+            headers: {
+                // 'Content-Type': "application/json",
+                token: localStorage.getItem('token')
+            },
+        })
+        const result = await response.json()
+        console.log(result)
+        if(response.status ==200){
+            toast.success(result.message)
+            return result
+        }else{
+            toast.error(result.error)
+            return rejectWithValue(result.error)
+        }
+    }catch(error){
+        toast.error("Failed")
+        return rejectWithValue(error)
+    }
+})
+export const leaveEvent = createAsyncThunk("fetch/leaveEvent", async(id, {rejectWithValue})=>{
+    try{
+        const response = await fetch(`${Backendurl}/event/leave-event/${id}`, {
+            method: 'PUT',
+            headers: {
+                // 'Content-Type': "application/json",
+                token: localStorage.getItem('token')
+            },
+        })
+        const result = await response.json()
+        console.log(result)
+        if(response.status ==200){
+            toast.success(result.message)
+            return result
+        }else{
+            toast.error(result.error)
+            return rejectWithValue(result.error)
+        }
+    }catch(error){
+        toast.error("Failed")
+        return rejectWithValue(error)
+    }
+})
+export const getEventDetail = createAsyncThunk("fetch/getDetailEvent", async(id, {rejectWithValue})=>{
+    try{
+        const response = await fetch(`${Backendurl}/event/${id}`, {
+            method: 'GET',
+            headers: {
+                token: localStorage.getItem('token')
+            },
+        })
+        const result = await response.json()
+        console.log(result)
+        if(response.status ==200){
+            return result
+        }else{
+            toast.error(result.error)
+            return rejectWithValue(result.error)
+        }
+    }catch(error){
+        toast.error("Failed")
+        return rejectWithValue(error)
+    }
+})
+export const updateEvent = createAsyncThunk("fetc/updateEvent", async({id,title, description, date, location}, {rejectWithValue})=>{
+     try{
+        const response = await fetch(`${Backendurl}/user/event/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': "application/json",
+                token: localStorage.getItem('token')
+            },
+            body: JSON.stringify({title, description, date, location})
+        })
+        const result = await response.json()
+        console.log(result)
+        if(response.status ==200){
+            return result
+        }else{
+            toast.error(result.error)
+            return rejectWithValue(result.error)
+        }
+    }catch(error){
+        toast.error("Failed")
+        return rejectWithValue(error)
+    }
+})
 
 const eventSlice = createSlice({
     name: 'event',
     initialState: {
         events: [],
         eventLoading: false,
-        error: false
+        error: false,
+        detailLoading : false,
+        detailEvent:  {}
     },
     reducers: {},
     extraReducers: (builder)=>{
@@ -107,6 +197,47 @@ const eventSlice = createSlice({
             state.eventLoading = false
             state.error = false
             state.events = state.events.filter((event)=> event.id !== action.payload.event.id)
+        })
+        // .addCase(joinEvent.pending, (state)=> {
+        //     state.eventLoading = true
+        // })
+        .addCase(joinEvent.rejected, (state,action)=>{
+            console.log(action.payload)
+            // state.eventLoading = false,
+            state.error = true
+        })
+        .addCase(joinEvent.fulfilled, (state, action)=>{
+            console.log(action.payload)
+            // state.eventLoading = false
+        })
+        .addCase(leaveEvent.rejected, (state)=> {
+            state.error = true
+        })
+        .addCase(leaveEvent.fulfilled, (state, action)=>{
+            state.error = false
+            console.log(action.payload)
+        })
+        .addCase(getEventDetail.pending, (state) =>{
+            state.eventLoading = true
+        })
+        .addCase(getEventDetail.rejected, (state)=>{
+            state.error = true
+        })
+        .addCase(getEventDetail.fulfilled, (state, action)=>{
+            state.eventLoading = false
+            state.error = false
+            state.detailEvent = action.payload.event
+        })
+        .addCase(updateEvent.pending, (state) =>{
+            state.eventLoading = true
+        })
+        .addCase(updateEvent.rejected, (state)=>{
+            state.error = true
+        })
+        .addCase(updateEvent.fulfilled, (state, action)=>{
+            state.eventLoading = false
+            state.error = false
+            console.log(action.payload)
         })
     }
 })

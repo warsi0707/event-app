@@ -4,12 +4,24 @@ const client = new PrismaClient()
 const handleJoinEvent =async (req, res)=>{
     const {id} = req.params;
     try{
+        const findUser = await client.event.findFirst({
+            where: {
+                userId: req.user
+            }
+        })
+        console.log(findUser)
+        if(findUser && findUser.userId === req.user){
+            return res.status(404).json({
+                error: "Already joined this event or any other"
+            })
+        }
         const joinEvent = await client.event.update({
             where: {id: id},
             data: {
                 userId: req.user
             }
         })
+        console.log(joinEvent)
         return res.json({
             message: "Joined event",
             event: joinEvent
@@ -33,7 +45,8 @@ const handleGetAllEvent =async (req, res)=>{
                 },
                 user: {
                     select: {
-                        name: true
+                        name: true,
+                        email: true
                     }
                 }
             }
@@ -70,8 +83,46 @@ const handleLeaveEvent = async(req,res)=>{
         })
     }
 }
+const getEventDetail = async(req,res)=>{
+    const {id} = req.params;
+    try{
+        const event = await client.event.findUnique({
+            where: {
+                id: id
+            },
+            include: {
+                postedBy: {
+                   select: {
+                     name: true,
+                    email: true
+                   }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        email: true
+                    }
+                }
+            }
+        })
+        if(!event){
+            return res.status(404).json({
+                error: "Event not found",
+                event: {}
+            })
+        }
+        return res.json({
+            event: event
+        })
+    }catch(error){
+        return res.status(404).json({
+            error: error
+        })
+    }
+}
 module.exports = {
     handleJoinEvent,
     handleGetAllEvent,
-    handleLeaveEvent
+    handleLeaveEvent,
+    getEventDetail
 }
