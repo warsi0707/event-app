@@ -96,7 +96,7 @@ To set up the Airbnb on your local machine, follow these steps:
 ![alt text](frontend/public/screenshot/post.png)
 
 ### Update event
-![alt text](frontend/public/screenshot/RatingCard.png)
+![alt text](frontend/public/screenshot/update.png)
 
 
 
